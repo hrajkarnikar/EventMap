@@ -6,5 +6,6 @@ target 'Event Map' do
 
   # Pods for Event Map
 pod 'GoogleMaps'
+pod 'SwiftyJSON'
 
 end
