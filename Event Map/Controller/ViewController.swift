@@ -72,11 +72,11 @@ class ViewController: UIViewController {
             }
         }
     }
-    
+   
     
     @IBAction func refreshPlaces(_ sender: UIBarButtonItem) {
-        
         fetchNearbyPlaces(coordinate: mapView.camera.target)
+        
     }
     
 }
@@ -115,6 +115,42 @@ extension ViewController: GMSMapViewDelegate{
     
     func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
         addressLabel.lock()
+        
+        if (gesture){
+            mapCenterPinImage.fadeIn(0.25)
+            mapView.selectedMarker = nil
+        }
+    }
+    
+    func mapView(_ mapView: GMSMapView, markerInfoContents marker: GMSMarker) -> UIView? {
+        guard let placeMarker = marker as? PlaceMarker else {
+            return nil
+        }
+        
+        guard let infoView = UIView.viewFromNibName("MarkerInfoView") as? MarkerInfoView else{
+            return nil
+        }
+        
+        infoView.nameLabel.text = placeMarker.place.name
+        
+        if let photo = placeMarker.place.photo {
+            infoView.placePhoto.image = photo
+        }else{
+            infoView.placePhoto.image = UIImage(named: "generic")
+        }
+        
+        return infoView
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        mapCenterPinImage.fadeOut(0.25)
+        return false
+    }
+    
+    func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
+        mapCenterPinImage.fadeIn(0.25)
+        mapView.selectedMarker = nil
+        return false
     }
 }
 
